@@ -1,0 +1,61 @@
+-- Procedure: Insert Trail 
+CREATE OR ALTER PROCEDURE CW1.sp_InsertTrail
+    @OwnerID INT,
+    @TrailName VARCHAR(100),
+    @Difficulty VARCHAR(20),
+    @Distance DECIMAL(5,2),
+    @EstTime VARCHAR(20)
+AS
+BEGIN
+    INSERT INTO CW1.TRAIL (OwnerID, TrailName, Difficulty, Distance, EstTime)
+    VALUES (@OwnerID, @TrailName, @Difficulty, @Distance, @EstTime);
+END
+GO
+
+-- Procedure: Get Trails 
+CREATE OR ALTER PROCEDURE CW1.sp_GetTrails
+AS
+BEGIN
+    SELECT * FROM CW1.TRAIL;
+END
+GO
+
+-- Procedure: Update Trail 
+CREATE OR ALTER PROCEDURE CW1.sp_UpdateTrail
+    @TrailID INT,
+    @NewDistance DECIMAL(5,2)
+AS
+BEGIN
+    UPDATE CW1.TRAIL
+    SET Distance = @NewDistance
+    WHERE TrailID = @TrailID;
+END
+GO
+
+-- Procedure: Delete Trail 
+CREATE OR ALTER PROCEDURE CW1.sp_DeleteTrail
+    @TrailID INT
+AS
+BEGIN
+    DELETE FROM CW1.TRAIL
+    WHERE TrailID = @TrailID;
+END
+GO
+
+-- Execution Script / Testing 
+PRINT 'BEFORE CHANGES...';
+EXEC CW1.sp_GetTrails;
+
+EXEC CW1.sp_InsertTrail 
+    @OwnerID = 1, 
+    @TrailName = 'Forest Run', 
+    @Difficulty = 'Easy', 
+    @Distance = 5.00, 
+    @EstTime = '45m';
+
+EXEC CW1.sp_DeleteTrail @TrailID = 2;
+
+EXEC CW1.sp_UpdateTrail @TrailID = 1, @NewDistance = 15.00;
+
+PRINT 'AFTER CHANGES...';
+EXEC CW1.sp_GetTrails;
