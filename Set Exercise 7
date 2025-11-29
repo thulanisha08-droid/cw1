@@ -1,0 +1,21 @@
+CREATE OR ALTER TRIGGER CW1.trg_LogNewTrail
+ON CW1.TRAIL
+AFTER INSERT
+AS
+BEGIN
+    INSERT INTO CW1.TRAIL_LOG (TrailID, OwnerID, Action, LogTimestamp)
+    SELECT 
+        i.TrailID,
+        i.OwnerID,
+        'INSERT',
+        GETDATE()
+    FROM INSERTED i;
+END
+GO
+
+-- Test the Trigger
+INSERT INTO CW1.TRAIL (OwnerID, TrailName, Difficulty, Distance, EstTime)
+VALUES (1, 'Coastal Path', 'Easy', 8.50, '2h 00m');
+
+-- Check the Log 
+SELECT * FROM CW1.TRAIL_LOG;
