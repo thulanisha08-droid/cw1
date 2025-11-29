@@ -1,0 +1,20 @@
+IF OBJECT_ID('CW1.vw_Trail_Details', 'V') IS NOT NULL
+    DROP VIEW CW1.vw_Trail_Details;
+GO
+
+CREATE VIEW CW1.vw_Trail_Details AS
+SELECT 
+    t.TrailID,
+    t.TrailName,
+    u.OwnerName,
+    u.OwnerEmail,
+    t.Difficulty,
+    t.Distance,
+    t.EstTime,
+    t.RouteType
+FROM CW1.TRAIL t
+INNER JOIN CW1.APP_USER u ON t.OwnerID = u.OwnerID;
+GO
+
+-- Test the view [cite: 236]
+SELECT * FROM CW1.vw_Trail_Details;
