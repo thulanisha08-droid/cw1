@@ -1,0 +1,52 @@
+-- 1. Insert USERS 
+IF NOT EXISTS (SELECT * FROM CW1.APP_USER WHERE OwnerEmail = 'grace@plymouth.ac.uk')
+BEGIN
+    INSERT INTO CW1.APP_USER (OwnerName, OwnerEmail)
+    VALUES ('Ada Lovelace', 'grace@plymouth.ac.uk');
+END
+
+IF NOT EXISTS (SELECT * FROM CW1.APP_USER WHERE OwnerEmail = 'tim@plymouth.ac.uk')
+BEGIN
+    INSERT INTO CW1.APP_USER (OwnerName, OwnerEmail)
+    VALUES ('Tim Berners-Lee', 'tim@plymouth.ac.uk');
+END
+
+-- 2. Insert ACTIVITIES
+IF NOT EXISTS (SELECT * FROM CW1.ACTIVITY WHERE ActivityName = 'Hiking')
+BEGIN
+    INSERT INTO CW1.ACTIVITY (ActivityName)
+    VALUES ('Hiking'), ('Mountain Biking'), ('Running');
+END
+
+-- 3. Insert TRAILS 
+-- Insert Plymbridge Circular
+IF NOT EXISTS (SELECT * FROM CW1.TRAIL WHERE TrailName = 'Plymbridge Circular')
+BEGIN
+    DECLARE @AdaID INT;
+    SELECT @AdaID = OwnerID FROM CW1.APP_USER WHERE OwnerEmail = 'grace@plymouth.ac.uk';
+
+    INSERT INTO CW1.TRAIL (OwnerID, TrailName, Difficulty, Distance, EstTime, RouteType)
+    VALUES (@AdaID, 'Plymbridge Circular', 'Moderate', 12.50, '2h 30m', 'Loop');
+END
+
+-- Insert Dartmoor Trek 
+IF NOT EXISTS (SELECT * FROM CW1.TRAIL WHERE TrailName = 'Dartmoor Trek')
+BEGIN
+    DECLARE @TimID INT;
+    SELECT @TimID = OwnerID FROM CW1.APP_USER WHERE OwnerEmail = 'tim@plymouth.ac.uk';
+
+    INSERT INTO CW1.TRAIL (OwnerID, TrailName, Difficulty, Distance, EstTime, RouteType)
+    VALUES (@TimID, 'Dartmoor Trek', 'Hard', 25.00, '5h 00m', 'Out & Back');
+END
+
+-- 4. Insert WAYPOINTS
+DECLARE @TrailID_Plym INT;
+SELECT @TrailID_Plym = TrailID FROM CW1.TRAIL WHERE TrailName = 'Plymbridge Circular';
+
+IF NOT EXISTS (SELECT * FROM CW1.WAYPOINT WHERE TrailID = @TrailID_Plym AND SequenceNum = 1)
+BEGIN
+    INSERT INTO CW1.WAYPOINT (TrailID, SequenceNum, Latitude, Longitude)
+    VALUES 
+    (@TrailID_Plym, 1, 50.395000, -4.100000),
+    (@TrailID_Plym, 2, 50.396000, -4.101000);
+END
